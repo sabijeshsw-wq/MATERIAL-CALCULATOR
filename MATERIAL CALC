@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material Command | Production Planner</title>
+
+<style>
+:root {
+  --navy:#172b43;
+  --blue:#2563eb;
+  --bg:#f2f5f9;
+  --line:#e2e8f0;
+  --text:#243247;
+  --muted:#718096;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+header {
+  background:var(--navy);
+  color:white;
+  padding:22px 28px;
+}
+.header-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+}
+.brand {
+  font-size:12px;
+  letter-spacing:2px;
+  color:#93c5fd;
+  font-weight:bold;
+}
+h1 { margin:7px 0 3px; font-size:25px; }
+.subtitle { color:#b9c9db; font-size:12px; }
+.status {
+  background:#245a48;
+  color:#a7f3d0;
+  padding:7px 12px;
+  border-radius:20px;
+  font-size:11px;
+}
+main {
+  max-width:1500px;
+  margin:auto;
+  padding:22px;
+}
+.section-title {
+  font-size:17px;
+  font-weight:bold;
+  margin:22px 0 13px;
+}
+.cards {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:13px;
+}
+.card {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:17px;
+}
+.card-label {
+  font-size:12px;
+  color:var(--muted);
+}
+.card-value {
+  font-size:27px;
+  font-weight:bold;
+  margin-top:8px;
+}
+.blue { color:#2563eb; }
+.green { color:#059669; }
+.purple { color:#7c3aed; }
+.orange { color:#d97706; }
+
+.toolbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+button {
+  border:0;
+  border-radius:7px;
+  padding:10px 15px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:12px;
+}
+.primary {
+  background:var(--blue);
+  color:white;
+}
+.secondary {
+  background:white;
+  border:1px solid var(--line);
+  color:var(--text);
+}
+button:hover { opacity:.85; }
+
+.table-wrap {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:11px;
+  overflow-x:auto;
+}
+table {
+  width:100%;
+  min-width:1150px;
+  border-collapse:collapse;
+}
+th {
+  background:#f7f9fc;
+  padding:13px 9px;
+  text-align:left;
+  font-size:11px;
+  color:#64748b;
+  white-space:nowrap;
+  border-bottom:1px solid var(--line);
+}
+td {
+  padding:9px;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+  vertical-align:middle;
+}
+tbody tr:hover { background:#f8fbff; }
+input,select {
+  border:1px solid #dce3ec;
+  border-radius:6px;
+  padding:8px;
+  background:white;
+  color:var(--text);
+  font-size:12px;
+  width:100%;
+  min-width:65px;
+}
+input:focus,select:focus {
+  outline:2px solid #bfdbfe;
+  border-color:var(--blue);
+}
+.dimensions {
+  display:flex;
+  gap:5px;
+  align-items:center;
+  min-width:125px;
+}
+.dimensions input { width:62px; }
+.edges {
+  display:flex;
+  gap:7px;
+  min-width:135px;
+}
+.edge-option {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  font-size:10px;
+  color:var(--muted);
+}
+.edge-option input {
+  width:15px;
+  min-width:15px;
+  height:15px;
+  accent-color:var(--blue);
+}
+.metres {
+  font-weight:bold;
+  color:#059669;
+  white-space:nowrap;
+}
+.delete {
+  background:#fee2e2;
+  color:#b91c1c;
+  padding:7px 10px;
+}
+.bottom-grid {
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:15px;
+  margin-top:20px;
+}
+.summary {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:18px;
+}
+.summary h3 {
+  font-size:14px;
+  margin:0 0 15px;
+}
+.summary-row {
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid var(--line);
+  font-size:12px;
+}
+.summary-row:last-child { border:0; }
+.badge {
+  padding:4px 8px;
+  background:#eff6ff;
+  color:#2563eb;
+  border-radius:5px;
+}
+.note {
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.6;
+  margin-top:13px;
+}
+footer {
+  text-align:center;
+  padding:25px;
+  font-size:11px;
+  color:var(--muted);
+}
+@media(max-width:700px) {
+  main { padding:13px; }
+  header { padding:18px; }
+  .cards { grid-template-columns:repeat(2,1fr); }
+  .bottom-grid { grid-template-columns:1fr; }
+  h1 { font-size:21px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-row">
+    <div>
+      <div class="brand">MATERIAL COMMAND</div>
+      <h1>Production Planner</h1>
+      <div class="subtitle">Furniture material requirement system</div>
+    </div>
+    <div class="status">● WORKSPACE READY</div>
+  </div>
+</header>
+
+<main>
+
+<div class="section-title">Project Overview</div>
+
+<div class="cards">
+  <div class="card">
+    <div class="card-label">Total Components</div>
+    <div class="card-value blue" id="totalItems">0</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Total Quantity</div>
+    <div class="card-value green" id="totalQty">0</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Edge Band Required</div>
+    <div class="card-value purple" id="totalEdge">0 m</div>
+  </div>
+  <div class="card">
+    <div class="card-label">Material Types</div>
+    <div class="card-value orange">4</div>
+  </div>
+</div>
+
+<div class="section-title">Component Entry</div>
+
+<div class="toolbar">
+  <div style="font-weight:bold;font-size:14px">
+    Component Register
+    <span class="badge" id="rowCount">0 rows</span>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <button class="secondary" onclick="addRow()">+ Add Row</button>
+    <button class="primary" onclick="addRow()">+ New Component</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+  <th>#</th>
+  <th>Component</th>
+  <th>Standard Size</th>
+  <th>Length (cm)</th>
+  <th>Height (cm)</th>
+  <th>Qty</th>
+  <th>Thickness</th>
+  <th>Wood Colour</th>
+  <th>Edge Colour</th>
+  <th>Edge Selection</th>
+  <th>Edge Metres</th>
+  <th></th>
+</tr>
+</thead>
+<tbody id="componentRows"></tbody>
+</table>
+</div>
+
+<div class="bottom-grid">
+
+  <div class="summary">
+    <h3>Edge Band Requirement</h3>
+    <div id="edgeSummary">
+      <div class="summary-row">
+        <span>No components entered</span>
+        <span>0 m</span>
+      </div>
+    </div>
+    <div class="note">
+      Edge band metres are calculated using the selected
+      individual edges, component dimensions and quantity.
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>Board Material Summary</h3>
+    <div id="boardSummary"></div>
+    <div class="note">
+      Cutting optimization and sheet quantities will be
+      activated in the next development stage.
+    </div>
+  </div>
+
+</div>
+
+</main>
+
+<footer>
+  MATERIAL COMMAND · FURNITURE PRODUCTION PLANNER · VERSION 1.0
+</footer>
+
+<script>
+
+const standardSizes = {
+  "60 × 280":[60,280],
+  "70 × 280":[70,280],
+  "60 × 140":[60,140],
+  "60 × 60":[60,60],
+  "55 × 280":[55,280],
+  "40 × 280":[40,280],
+  "Custom":[60,280]
+};
+
+const colours = [
+  "White","Oak","Grey","Walnut","Black","Beige"
+];
+
+let nextId = 0;
+
+function colourOptions() {
+  return colours.map(c =>
+    <option value="${c}">${c}</option>
+  ).join("");
+}
+
+function addRow() {
+  nextId++;
+
+  const id = nextId;
+
+  const row = document.createElement("tr");
+  row.dataset.id = id;
+
+  row.innerHTML = `
+    <td>${id}</td>
+
+    <td>
+      <select class="component">
+        <option>Partition</option>
+        <option>Shelf</option>
+        <option>Side Panel</option>
+        <option>Door</option>
+        <option>Drawer Front</option>
+        <option>Back Panel</option>
+        <option>Custom</option>
+      </select>
+    </td>
+
+    <td>
+      <select class="standard">
+        ${Object.keys(standardSizes).map(s =>
+          <option value="${s}">${s}</option>
+        ).join("")}
+      </select>
+    </td>
+
+    <td><input class="length" type="number" min="0" value="60"></td>
+    <td><input class="height" type="number" min="0" value="280"></td>
+    <td><input class="qty" type="number" min="1" value="1"></td>
+
+    <td>
+      <select class="thickness">
+        <option>22 mm</option>
+        <option>18 mm</option>
+        <option>16 mm</option>
+        <option>8 mm</option>
+      </select>
+    </td>
+
+    <td>
+      <select class="wood">
+        ${colourOptions()}
+      </select>
+    </td>
+
+    <td>
+      <select class="edgeColour">
+        ${colourOptions()}
+      </select>
+    </td>
+
+    <td>
+      <div class="edges">
+        ${["Top","Bottom","Left","Right"].map((e,i) =>
+          `<label class="edge-option">
+            <input type="checkbox" class="edgeCheck" ${i<2?"checked":""}>
+            ${e}
+          </label>`
+        ).join("")}
+      </div>
+    </td>
+
+    <td class="metres">0.00 m</td>
+
+    <td>
+      <button class="delete" onclick="removeRow(this)">×</button>
+    </td>
+  `;
+
+  document.getElementById("componentRows").appendChild(row);
+
+  const standard = row.querySelector(".standard");
+  standard.addEventListener("change", () => {
+    const size = standardSizes[standard.value];
+
+    if(size) {
+      row.querySelector(".length").value = size[0];
+      row.querySelector(".height").value = size[1];
+    }
+
+    calculate();
+  });
+
+  row.addEventListener("input", calculate);
+  row.addEventListener("change", calculate);
+
+  calculate();
+}
+
+function removeRow(button) {
+  button.closest("tr").remove();
+  calculate();
+}
+
+function calculate() {
+
+  const rows = [...document.querySelectorAll("#componentRows tr")];
+
+  let totalItems = rows.length;
+  let totalQty = 0;
+  let totalEdge = 0;
+
+  let edgeColours = {};
+  let boardColours = {};
+
+  rows.forEach(row => {
+
+    const length = Math.max(0,Number(row.querySelector(".length").value) || 0);
+    const height = Math.max(0,Number(row.querySelector(".height").value) || 0);
+    const qty = Math.max(0,Number(row.querySelector(".qty").value) || 0);
+
+    const thickness = row.querySelector(".thickness").value;
+    const wood = row.querySelector(".wood").value;
+    const edgeColour = row.querySelector(".edgeColour").value;
+
+    const checks = [...row.querySelectorAll(".edgeCheck")];
+
+    let edgeLength = 0;
+
+    if(checks[0].checked) edgeLength += length;
+    if(checks[1].checked) edgeLength += length;
+    if(checks[2].checked) edgeLength += height;
+    if(checks[3].checked) edgeLength += height;
+
+    const metres = (edgeLength / 100) * qty;
+
+    row.querySelector(".metres").textContent =
+      metres.toFixed(2) + " m";
+
+    totalQty += qty;
+    totalEdge += metres;
+
+    edgeColours[edgeColour] =
+      (edgeColours[edgeColour] || 0) + metres;
+
+    const key = thickness + " / " + wood;
+
+    boardColours[key] =
+      (boardColours[key] || 0) + qty;
+  });
+
+  document.getElementById("totalItems").textContent = totalItems;
+  document.getElementById("totalQty").textContent = totalQty;
+  document.getElementById("totalEdge").textContent =
+    totalEdge.toFixed(2) + " m";
+
+  document.getElementById("rowCount").textContent =
+    totalItems + " rows";
+
+  const edgeSummary = document.getElementById("edgeSummary");
+
+  edgeSummary.innerHTML = "";
+
+  if(Object.keys(edgeColours).length === 0) {
+    edgeSummary.innerHTML =
+      <div class="summary-row"><span>No components entered</span><span>0 m</span></div>;
+  }
+
+  Object.entries(edgeColours).forEach(([colour,metres]) => {
+    edgeSummary.innerHTML += `
+      <div class="summary-row">
+        <span>${colour}</span>
+        <strong>${metres.toFixed(2)} m</strong>
+      </div>
+    `;
+  });
+
+  const boardSummary = document.getElementById("boardSummary");
+
+  boardSummary.innerHTML = "";
+
+  if(Object.keys(boardColours).length === 0) {
+    boardSummary.innerHTML =
+      <div class="summary-row"><span>No material entered</span><span>—</span></div>;
+  }
+
+  Object.entries(boardColours).forEach(([material,qty]) => {
+    boardSummary.innerHTML += `
+      <div class="summary-row">
+        <span>${material}</span>
+        <strong>${qty} components</strong>
+      </div>
+    `;
+  });
+}
+
+// Start with three example rows
+addRow();
+addRow();
+addRow();
+
+</script>
+
+</body>
+</html>
