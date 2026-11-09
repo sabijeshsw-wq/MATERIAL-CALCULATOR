@@ -3,87 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#142b45">
   <title>Material Command Production Planner v1.1</title>
   <style>
     :root {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-family: Arial, sans-serif;
       color: #172b43;
       background: #f3f6fa;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      --navy: #142b45;
+      --navy: #172b43;
       --blue: #2563eb;
-      --line: #e1e7ef;
+      --line: #dfe6ef;
       --muted: #65758b;
-      --surface: #fff;
     }
 
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-width: 320px;
-    }
+    body { margin: 0; min-width: 320px; }
 
     header {
-      padding: 24px clamp(18px, 4vw, 48px);
-      color: #fff;
+      padding: 20px clamp(16px, 4vw, 40px);
       background: var(--navy);
+      color: #fff;
     }
 
-    header .eyebrow {
-      margin: 0 0 5px;
-      color: #b9c9dc;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(22px, 3vw, 30px);
-      line-height: 1.2;
-    }
+    h1 { margin: 0; font-size: clamp(22px, 3vw, 30px); }
 
     main {
       max-width: 1600px;
-      margin: 0 auto;
-      padding: 26px clamp(14px, 3vw, 36px) 48px;
+      margin: auto;
+      padding: 22px clamp(12px, 3vw, 30px) 40px;
     }
 
-    .metrics {
+    .cards {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 14px;
+      gap: 12px;
     }
 
     .card,
-    .panel {
+    .summary {
       border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--surface);
+      border-radius: 9px;
+      background: #fff;
       box-shadow: 0 2px 8px #172b4308;
     }
 
-    .card {
-      min-height: 94px;
-      padding: 16px 18px;
-    }
+    .card { min-height: 77px; padding: 13px 15px; }
+    .card-label { color: var(--muted); font-size: 13px; }
 
-    .card-label {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .card-value {
+    .card .v {
       display: block;
-      margin-top: 8px;
-      font-size: 27px;
-      font-weight: 750;
-      line-height: 1;
+      margin-top: 5px;
+      font-size: 23px;
+      font-weight: 700;
       font-variant-numeric: tabular-nums;
     }
 
@@ -92,95 +62,73 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      margin: 25px 0 12px;
+      margin: 22px 0 10px;
     }
 
     .toolbar h2,
-    .panel h2 {
+    .summary h2 {
       margin: 0;
       font-size: 17px;
     }
 
     .hint {
-      margin: 0;
+      margin: 4px 0 0;
       color: var(--muted);
       font-size: 13px;
     }
 
-    .button {
-      display: inline-flex;
-      min-height: 40px;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 0 14px;
+    button {
+      padding: 9px 13px;
       border: 0;
-      border-radius: 8px;
+      border-radius: 6px;
       background: var(--blue);
-      color: white;
-      font: 600 14px inherit;
+      color: #fff;
+      font: 600 14px Arial, sans-serif;
       cursor: pointer;
-      box-shadow: 0 2px 5px #2563eb30;
     }
 
-    .button:hover { background: #1d4ed8; }
-
-    .button:focus-visible,
-    input:focus-visible,
-    select:focus-visible {
-      outline: 3px solid #93c5fd;
-      outline-offset: 1px;
-    }
+    button:hover { background: #1d4ed8; }
 
     .table-wrap {
       overflow: auto;
       border: 1px solid var(--line);
-      border-radius: 12px;
+      border-radius: 9px;
       background: white;
-      box-shadow: 0 2px 8px #172b4308;
     }
 
     table {
       width: 100%;
-      min-width: 1320px;
-      border-collapse: separate;
-      border-spacing: 0;
+      min-width: 1240px;
+      border-collapse: collapse;
       table-layout: fixed;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     th,
     td {
-      padding: 5px 6px;
-      border-bottom: 1px solid var(--line);
+      padding: 4px 5px;
+      border: 1px solid var(--line);
       text-align: center;
       vertical-align: middle;
     }
 
     th {
-      position: sticky;
-      z-index: 1;
-      top: 0;
-      background: #f7f9fc;
+      background: #f4f7fb;
       color: #52647a;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .035em;
+      font-size: 10px;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
-    tbody tr:last-child td { border-bottom: 0; }
-    tbody tr:hover { background: #fbfdff; }
-    td:first-child { color: var(--muted); font-weight: 700; }
+    tbody tr:nth-child(even) { background: #fbfcfe; }
 
     input:not([type="checkbox"]),
     select {
       width: 100%;
-      height: 29px;
-      padding: 0 6px;
-      border: 1px solid #d6dee8;
-      border-radius: 6px;
+      height: 27px;
+      padding: 0 5px;
+      border: 1px solid #d4dce7;
+      border-radius: 4px;
       background: #fff;
       color: #172b43;
       font: inherit;
@@ -202,20 +150,18 @@
     .edge-options {
       display: grid;
       grid-template-columns: repeat(2, auto);
-      align-content: center;
       justify-content: center;
-      column-gap: 9px;
-      row-gap: 1px;
-      white-space: nowrap;
+      column-gap: 8px;
+      row-gap: 0;
     }
 
     .edge-options label {
       display: inline-flex;
       align-items: center;
-      gap: 3px;
+      gap: 2px;
       color: #52647a;
       font-size: 10px;
-      line-height: 14px;
+      line-height: 13px;
     }
 
     .same-cell {
@@ -225,263 +171,121 @@
 
     .result {
       font-variant-numeric: tabular-nums;
-      font-weight: 650;
+      font-weight: 600;
       white-space: nowrap;
     }
 
     .warning {
       color: #b45309;
-      font-size: 12px;
       font-weight: 700;
       white-space: nowrap;
     }
 
-    th:nth-child(1), td:nth-child(1) { width: 38px; }
-    th:nth-child(2), td:nth-child(2) { width: 112px; }
+    th:nth-child(1), td:nth-child(1) { width: 34px; }
+    th:nth-child(2), td:nth-child(2) { width: 100px; }
     th:nth-child(3), td:nth-child(3),
-    th:nth-child(4), td:nth-child(4) { width: 78px; }
-    th:nth-child(5), td:nth-child(5) { width: 58px; }
-    th:nth-child(6), td:nth-child(6) { width: 90px; }
+    th:nth-child(4), td:nth-child(4) { width: 70px; }
+    th:nth-child(5), td:nth-child(5) { width: 48px; }
+    th:nth-child(6), td:nth-child(6) { width: 82px; }
     th:nth-child(7), td:nth-child(7),
-    th:nth-child(8), td:nth-child(8) { width: 100px; }
-    th:nth-child(9), td:nth-child(9) { width: 52px; }
-    th:nth-child(10), td:nth-child(10) { width: 82px; }
-    th:nth-child(11), td:nth-child(11) { width: 94px; }
-    th:nth-child(12), td:nth-child(12) { width: 68px; }
+    th:nth-child(8), td:nth-child(8) { width: 88px; }
+    th:nth-child(9), td:nth-child(9) { width: 48px; }
+    th:nth-child(10), td:nth-child(10) { width: 75px; }
+    th:nth-child(11), td:nth-child(11) { width: 84px; }
+    th:nth-child(12), td:nth-child(12) { width: 62px; }
     th:nth-child(13), td:nth-child(13),
-    th:nth-child(14), td:nth-child(14) { width: 76px; }
-    th:nth-child(15), td:nth-child(15) { width: 80px; }
+    th:nth-child(14), td:nth-child(14) { width: 68px; }
+    th:nth-child(15), td:nth-child(15) { width: 72px; }
 
     .summary {
-      margin-top: 20px;
-      padding: 19px;
-    }
-
-    .summary-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 14px;
+      margin-top: 16px;
+      padding: 16px;
     }
 
     .summary-list {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(225px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
 
     .summary-item {
-      padding: 14px;
+      padding: 11px;
       border: 1px solid var(--line);
-      border-radius: 9px;
+      border-radius: 7px;
       background: #fbfcfe;
     }
 
     .summary-item h3 {
-      margin: 0 0 10px;
-      font-size: 14px;
+      margin: 0 0 7px;
+      font-size: 13px;
     }
 
     .summary-stats {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px 16px;
+      gap: 6px 14px;
       color: #52647a;
-      font-size: 13px;
+      font-size: 12px;
     }
 
-    .summary-stats b {
-      color: #172b43;
-      font-variant-numeric: tabular-nums;
+    .summary-stats b { color: #172b43; }
+    .empty { color: var(--muted); font-size: 13px; }
+
+    @media (max-width: 850px) {
+      .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 
-    .empty {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .card { min-height: 84px; padding: 14px; }
-      .card-value { font-size: 24px; }
-    }
-
-    @media (max-width: 560px) {
-      header { padding: 19px 16px; }
-      main { padding: 18px 12px 32px; }
-      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
-      .card { min-height: 78px; padding: 12px; }
-      .card-label { font-size: 12px; }
-      .card-value { font-size: 22px; }
+    @media (max-width: 520px) {
+      main { padding: 16px 10px 28px; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .card { padding: 11px; }
+      .card .v { font-size: 21px; }
       .toolbar { align-items: flex-start; flex-direction: column; }
-      .toolbar .button { width: 100%; }
-      .summary { padding: 15px; }
-      .summary-head { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .toolbar button { width: 100%; }
+      .summary { padding: 13px; }
     }
   </style>
 </head>
 <body>
   <header>
-    <p class="eyebrow">Workshop planning</p>
-    <h1>
-      Material Command Production Planner
-      <span style="color:#b9c9dc;font-weight:500">v1.1</span>
-    </h1>
+    <h1>Material Command Production Planner v1.1</h1>
   </header>
 
   <main>
-    <section class="metrics" aria-label="Production totals">
-      <article class="card">
-        <span class="card-label">Components</span>
-        <strong class="card-value" id="c1">0</strong>
-      </article>
-      <article class="card">
-        <span class="card-label">Total quantity</span>
-        <strong class="card-value" id="c2">0</strong>
-      </article>
-      <article class="card">
-        <span class="card-label">Area m²</span>
-        <strong class="card-value" id="c3">0.00</strong>
-      </article>
-      <article class="card">
-        <span class="card-label">Sheets required</span>
-        <strong class="card-value" id="c4">0</strong>
-      </article>
-      <article class="card">
-        <span class="card-label">Edge m</span>
-        <strong class="card-value" id="c5">0.00</strong>
-      </article>
+    <section class="cards" aria-label="Production totals">
+      <div class="card"><span class="card-label">Components</span><strong id="c1" class="v">0</strong></div>
+      <div class="card"><span class="card-label">Quantity</span><strong id="c2" class="v">0</strong></div>
+      <div class="card"><span class="card-label">Area m²</span><strong id="c3" class="v">0.00</strong></div>
+      <div class="card"><span class="card-label">Sheets</span><strong id="c4" class="v">0</strong></div>
+      <div class="card"><span class="card-label">Edge m</span><strong id="c5" class="v">0.00</strong></div>
     </section>
 
     <div class="toolbar">
       <div>
         <h2>Components</h2>
-        <p class="hint">
-          Dimensions are in centimetres. Scroll horizontally to see every column.
-        </p>
+        <p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p>
       </div>
-      <button class="button" type="button" id="add-row">＋ Add component</button>
+      <button type="button" id="add-button">+ Add Component</button>
     </div>
 
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Component</th>
-            <th>Length cm</th>
-            <th>Height cm</th>
-            <th>Qty</th>
-            <th>Thickness</th>
-            <th>Wood</th>
-            <th>Edge color</th>
-            <th>Same</th>
-            <th>Grain</th>
-            <th>Sheet cm</th>
-            <th>Edges</th>
-            <th>Area m²</th>
-            <th>Edge m</th>
-            <th>Warning</th>
+            <th>#</th><th>Component</th><th>L cm</th><th>H cm</th>
+            <th>Qty</th><th>Thickness</th><th>Wood</th><th>Edge</th>
+            <th>Same</th><th>Grain</th><th>Sheet</th><th>Edges</th>
+            <th>Area</th><th>Edge m</th><th>Warn</th>
           </tr>
         </thead>
-        <tbody id="tbody">
-          <tr>
-            <td>1</td>
-            <td><select aria-label="Component"><option>Shelf</option><option>Partition</option><option>Door</option></select></td>
-            <td><input class="l" aria-label="Length in centimetres" value="60" type="number" min="0" step="any"></td>
-            <td><input class="h" aria-label="Height in centimetres" value="280" type="number" min="0" step="any"></td>
-            <td><input class="q" aria-label="Quantity" value="1" type="number" min="0" step="1"></td>
-            <td><select class="t" aria-label="Thickness"><option selected>22 mm</option><option>18 mm</option><option>16 mm</option><option>8 mm</option></select></td>
-            <td><select class="w" aria-label="Wood color"></select></td>
-            <td><select class="e" aria-label="Edge color"></select></td>
-            <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
-            <td><select class="g" aria-label="Grain direction"><option selected>Grained</option><option>Plain</option></select></td>
-            <td><input class="sheet" aria-label="Sheet size" value="207x280"></td>
-            <td><div class="edge-options"><label>T<input class="ed" type="checkbox" checked aria-label="Top edge"></label><label>B<input class="ed" type="checkbox" checked aria-label="Bottom edge"></label><label>L<input class="ed" type="checkbox" aria-label="Left edge"></label><label>R<input class="ed" type="checkbox" aria-label="Right edge"></label></div></td>
-            <td class="result a">0.00</td>
-            <td class="result m">0.00</td>
-            <td class="warning warn"></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td><select aria-label="Component"><option>Shelf</option><option>Partition</option><option>Door</option></select></td>
-            <td><input class="l" aria-label="Length in centimetres" value="60" type="number" min="0" step="any"></td>
-            <td><input class="h" aria-label="Height in centimetres" value="280" type="number" min="0" step="any"></td>
-            <td><input class="q" aria-label="Quantity" value="1" type="number" min="0" step="1"></td>
-            <td><select class="t" aria-label="Thickness"><option selected>22 mm</option><option>18 mm</option><option>16 mm</option><option>8 mm</option></select></td>
-            <td><select class="w" aria-label="Wood color"></select></td>
-            <td><select class="e" aria-label="Edge color"></select></td>
-            <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
-            <td><select class="g" aria-label="Grain direction"><option selected>Grained</option><option>Plain</option></select></td>
-            <td><input class="sheet" aria-label="Sheet size" value="207x280"></td>
-            <td><div class="edge-options"><label>T<input class="ed" type="checkbox" checked aria-label="Top edge"></label><label>B<input class="ed" type="checkbox" checked aria-label="Bottom edge"></label><label>L<input class="ed" type="checkbox" aria-label="Left edge"></label><label>R<input class="ed" type="checkbox" aria-label="Right edge"></label></div></td>
-            <td class="result a">0.00</td>
-            <td class="result m">0.00</td>
-            <td class="warning warn"></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td><select aria-label="Component"><option>Shelf</option><option>Partition</option><option>Door</option></select></td>
-            <td><input class="l" aria-label="Length in centimetres" value="60" type="number" min="0" step="any"></td>
-            <td><input class="h" aria-label="Height in centimetres" value="280" type="number" min="0" step="any"></td>
-            <td><input class="q" aria-label="Quantity" value="1" type="number" min="0" step="1"></td>
-            <td><select class="t" aria-label="Thickness"><option selected>22 mm</option><option>18 mm</option><option>16 mm</option><option>8 mm</option></select></td>
-            <td><select class="w" aria-label="Wood color"></select></td>
-            <td><select class="e" aria-label="Edge color"></select></td>
-            <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
-            <td><select class="g" aria-label="Grain direction"><option selected>Grained</option><option>Plain</option></select></td>
-            <td><input class="sheet" aria-label="Sheet size" value="207x280"></td>
-            <td><div class="edge-options"><label>T<input class="ed" type="checkbox" checked aria-label="Top edge"></label><label>B<input class="ed" type="checkbox" checked aria-label="Bottom edge"></label><label>L<input class="ed" type="checkbox" aria-label="Left edge"></label><label>R<input class="ed" type="checkbox" aria-label="Right edge"></label></div></td>
-            <td class="result a">0.00</td>
-            <td class="result m">0.00</td>
-            <td class="warning warn"></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td><select aria-label="Component"><option>Shelf</option><option>Partition</option><option>Door</option></select></td>
-            <td><input class="l" aria-label="Length in centimetres" value="60" type="number" min="0" step="any"></td>
-            <td><input class="h" aria-label="Height in centimetres" value="280" type="number" min="0" step="any"></td>
-            <td><input class="q" aria-label="Quantity" value="1" type="number" min="0" step="1"></td>
-            <td><select class="t" aria-label="Thickness"><option selected>22 mm</option><option>18 mm</option><option>16 mm</option><option>8 mm</option></select></td>
-            <td><select class="w" aria-label="Wood color"></select></td>
-            <td><select class="e" aria-label="Edge color"></select></td>
-            <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
-            <td><select class="g" aria-label="Grain direction"><option selected>Grained</option><option>Plain</option></select></td>
-            <td><input class="sheet" aria-label="Sheet size" value="207x280"></td>
-            <td><div class="edge-options"><label>T<input class="ed" type="checkbox" checked aria-label="Top edge"></label><label>B<input class="ed" type="checkbox" checked aria-label="Bottom edge"></label><label>L<input class="ed" type="checkbox" aria-label="Left edge"></label><label>R<input class="ed" type="checkbox" aria-label="Right edge"></label></div></td>
-            <td class="result a">0.00</td>
-            <td class="result m">0.00</td>
-            <td class="warning warn"></td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td><select aria-label="Component"><option>Shelf</option><option>Partition</option><option>Door</option></select></td>
-            <td><input class="l" aria-label="Length in centimetres" value="60" type="number" min="0" step="any"></td>
-            <td><input class="h" aria-label="Height in centimetres" value="280" type="number" min="0" step="any"></td>
-            <td><input class="q" aria-label="Quantity" value="1" type="number" min="0" step="1"></td>
-            <td><select class="t" aria-label="Thickness"><option selected>22 mm</option><option>18 mm</option><option>16 mm</option><option>8 mm</option></select></td>
-            <td><select class="w" aria-label="Wood color"></select></td>
-            <td><select class="e" aria-label="Edge color"></select></td>
-            <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
-            <td><select class="g" aria-label="Grain direction"><option selected>Grained</option><option>Plain</option></select></td>
-            <td><input class="sheet" aria-label="Sheet size" value="207x280"></td>
-            <td><div class="edge-options"><label>T<input class="ed" type="checkbox" checked aria-label="Top edge"></label><label>B<input class="ed" type="checkbox" checked aria-label="Bottom edge"></label><label>L<input class="ed" type="checkbox" aria-label="Left edge"></label><label>R<input class="ed" type="checkbox" aria-label="Right edge"></label></div></td>
-            <td class="result a">0.00</td>
-            <td class="result m">0.00</td>
-            <td class="warning warn"></td>
-          </tr>
-        </tbody>
+        <tbody id="tbody"></tbody>
       </table>
     </div>
 
-    <section class="panel summary">
-      <div class="summary-head">
-        <h2>Material summary</h2>
-        <p class="hint">Grouped by wood color, thickness, and grain</p>
-      </div>
-      <div class="summary-list" id="summary"></div>
+    <section class="summary">
+      <h2>Material Summary</h2>
+      <div id="summary" class="summary-list"></div>
     </section>
   </main>
 
@@ -493,43 +297,18 @@
 
     const tbody = document.querySelector("#tbody");
     const summary = document.querySelector("#summary");
-    let rowCount = 5;
+    let rowNumber = 0;
 
-    const options = items =>
-      items.map(item => `<option>${item}</option>`).join("");
-
-    function bindRow(row) {
-      const wood = row.querySelector(".w");
-      const edge = row.querySelector(".e");
-      const same = row.querySelector(".same");
-
-      if (!wood.options.length) wood.innerHTML = options(colors);
-      if (!edge.options.length) edge.innerHTML = options(colors);
-
-      edge.value = wood.value;
-      edge.disabled = true;
-
-      wood.addEventListener("change", () => {
-        if (same.checked) edge.value = wood.value;
-        calc();
-      });
-
-      same.addEventListener("change", () => {
-        edge.disabled = same.checked;
-        if (same.checked) edge.value = wood.value;
-        calc();
-      });
-
-      row.addEventListener("input", calc);
-      row.addEventListener("change", calc);
+    function options(items) {
+      return items.map(item => `<option>${item}</option>`).join("");
     }
 
     function addRow() {
-      rowCount++;
+      rowNumber++;
 
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td>${rowCount}</td>
+        <td>${rowNumber}</td>
         <td>
           <select aria-label="Component">
             <option>Shelf</option>
@@ -550,9 +329,13 @@
         </td>
         <td><select class="w" aria-label="Wood color">${options(colors)}</select></td>
         <td><select class="e" aria-label="Edge color">${options(colors)}</select></td>
-        <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
         <td>
-          <select class="g" aria-label="Grain direction">
+          <div class="same-cell">
+            <input class="same" aria-label="Use same edge color" type="checkbox" checked>
+          </div>
+        </td>
+        <td>
+          <select class="g" aria-label="Grain">
             <option selected>Grained</option>
             <option>Plain</option>
           </select>
@@ -566,74 +349,93 @@
             <label>R<input class="ed" type="checkbox" aria-label="Right edge"></label>
           </div>
         </td>
-        <td class="result a">0.00</td>
-        <td class="result m">0.00</td>
-        <td class="warning warn"></td>
+        <td class="a result">0.00</td>
+        <td class="m result">0.00</td>
+        <td class="warn warning"></td>
       `;
 
       tbody.appendChild(row);
-      bindRow(row);
-      calc();
+
+      const wood = row.querySelector(".w");
+      const edge = row.querySelector(".e");
+      const same = row.querySelector(".same");
+
+      edge.value = wood.value;
+      edge.disabled = true;
+
+      wood.addEventListener("change", () => {
+        if (same.checked) edge.value = wood.value;
+        calculate();
+      });
+
+      same.addEventListener("change", () => {
+        edge.disabled = same.checked;
+        if (same.checked) edge.value = wood.value;
+        calculate();
+      });
+
+      row.addEventListener("input", calculate);
+      row.addEventListener("change", calculate);
+      calculate();
     }
 
-    function calc() {
+    function calculate() {
       const rows = [...tbody.querySelectorAll("tr")];
-      let quantity = 0;
-      let edgeTotal = 0;
-      let areaTotal = 0;
-      let sheetsTotal = 0;
+      let totalQuantity = 0;
+      let totalEdge = 0;
+      let totalArea = 0;
+      let totalSheets = 0;
       const groups = {};
 
       rows.forEach(row => {
-        const length = Math.max(0, Number(row.querySelector(".l").value) || 0);
-        const height = Math.max(0, Number(row.querySelector(".h").value) || 0);
-        const qty = Math.max(0, Number(row.querySelector(".q").value) || 0);
+        const length = Number(row.querySelector(".l").value) || 0;
+        const height = Number(row.querySelector(".h").value) || 0;
+        const quantity = Number(row.querySelector(".q").value) || 0;
         const color = row.querySelector(".w").value;
         const thickness = row.querySelector(".t").value;
         const grain = row.querySelector(".g").value;
 
-        const area = length * height * qty / 10000;
+        const area = length * height * quantity / 10000;
         row.querySelector(".a").textContent = area.toFixed(2);
-        areaTotal += area;
+        totalArea += area;
 
-        const edges = [...row.querySelectorAll(".ed")];
-        const edgeCm =
-          (edges[0].checked ? length : 0) +
-          (edges[1].checked ? length : 0) +
-          (edges[2].checked ? height : 0) +
-          (edges[3].checked ? height : 0);
+        const edgeChecks = row.querySelectorAll(".ed");
+        let edgeCm = 0;
+        if (edgeChecks[0].checked) edgeCm += length;
+        if (edgeChecks[1].checked) edgeCm += length;
+        if (edgeChecks[2].checked) edgeCm += height;
+        if (edgeChecks[3].checked) edgeCm += height;
 
-        const edgeM = edgeCm * qty / 100;
-        row.querySelector(".m").textContent = edgeM.toFixed(2);
-        edgeTotal += edgeM;
-        quantity += qty;
+        const edgeMetres = edgeCm * quantity / 100;
+        row.querySelector(".m").textContent = edgeMetres.toFixed(2);
+        totalEdge += edgeMetres;
+        totalQuantity += quantity;
 
         const oversize = length > 206 || height > 279;
         row.querySelector(".warn").textContent = oversize ? "Oversize" : "";
         row.querySelector(".warn").title = oversize
-          ? "Part exceeds the 206 × 279 cm usable sheet dimensions"
+          ? "Part exceeds the usable 206 × 279 cm sheet size"
           : "";
 
         const sheetArea = 206 * 279 / 10000;
-        sheetsTotal += area * 1.15 / sheetArea;
+        totalSheets += area * 1.15 / sheetArea;
 
         const key = `${color} | ${thickness} | ${grain}`;
         if (!groups[key]) groups[key] = { area: 0, edge: 0 };
         groups[key].area += area;
-        groups[key].edge += edgeM;
+        groups[key].edge += edgeMetres;
       });
 
       document.querySelector("#c1").textContent = rows.length;
-      document.querySelector("#c2").textContent = quantity;
-      document.querySelector("#c3").textContent = areaTotal.toFixed(2);
-      document.querySelector("#c4").textContent = Math.ceil(sheetsTotal);
-      document.querySelector("#c5").textContent = edgeTotal.toFixed(2);
+      document.querySelector("#c2").textContent = totalQuantity;
+      document.querySelector("#c3").textContent = totalArea.toFixed(2);
+      document.querySelector("#c4").textContent = Math.ceil(totalSheets);
+      document.querySelector("#c5").textContent = totalEdge.toFixed(2);
 
       summary.replaceChildren();
 
       if (!Object.keys(groups).length) {
-        summary.innerHTML =
-          '<p class="empty">No components yet. Add a component to see material totals.</p>';
+        summary.innerHTML = '<p class="empty">No components yet.</p>';
         return;
       }
 
@@ -657,12 +459,12 @@
       });
     }
 
-    document.querySelector("#add-row").addEventListener("click", addRow);
+    document.querySelector("#add-button").addEventListener("click", addRow);
 
-    // The five starter rows are in the HTML, so they remain visible without JavaScript.
-    // This initializes the dropdowns, totals, and input listeners for those rows.
-    tbody.querySelectorAll("tr").forEach(bindRow);
-    calc();
+    // Add five rows after the page has loaded.
+    window.addEventListener("load", () => {
+      for (let i = 0; i < 5; i++) addRow();
+    });
   </script>
 </body>
 </html>
