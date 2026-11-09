@@ -6,8 +6,7 @@
   <title>Material Command Production Planner v1.1</title>
   <style>
     :root{font-family:Arial,sans-serif;color:#172b43;background:#f3f6fa;--navy:#172b43;--blue:#2563eb;--line:#dfe6ef;--muted:#65758b}
-    *{box-sizing:border-box}
-    body{margin:0;min-width:320px}
+    *{box-sizing:border-box}body{margin:0;min-width:320px}
     header{padding:20px clamp(16px,4vw,40px);background:var(--navy);color:#fff}
     h1{margin:0;font-size:clamp(22px,3vw,30px)}
     main{max-width:1600px;margin:auto;padding:22px clamp(12px,3vw,30px) 40px}
@@ -19,8 +18,11 @@
     .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px}
     .toolbar h2,.summary h2{margin:0;font-size:17px}
     .hint{margin:4px 0 0;color:var(--muted);font-size:13px}
+    .toolbar-actions{display:flex;gap:8px}
     button{padding:9px 13px;border:0;border-radius:6px;background:var(--blue);color:#fff;font:600 14px Arial,sans-serif;cursor:pointer}
     button:hover{background:#1d4ed8}
+    button.clear-button{background:#64748b}
+    button.clear-button:hover{background:#475569}
     .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:9px;background:white}
     table{width:100%;min-width:1240px;border-collapse:collapse;table-layout:fixed;font-size:12px}
     th,td{padding:4px 5px;border:1px solid var(--line);text-align:center;vertical-align:middle}
@@ -60,7 +62,8 @@
       .card{padding:11px}
       .card .v{font-size:21px}
       .toolbar{align-items:flex-start;flex-direction:column}
-      .toolbar button{width:100%}
+      .toolbar-actions{width:100%}
+      .toolbar button{flex:1}
       .summary{padding:13px}
     }
   </style>
@@ -82,7 +85,10 @@
         <h2>Components</h2>
         <p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p>
       </div>
-      <button type="button" id="add-button">+ Add Component</button>
+      <div class="toolbar-actions">
+        <button type="button" class="clear-button" id="clear-button">Clear</button>
+        <button type="button" id="add-button">+ Add Component</button>
+      </div>
     </div>
 
     <div class="table-wrap">
@@ -109,7 +115,6 @@
       "White", "Oak", "Walnut", "Grey",
       "Black", "Beige", "Cashmere", "Anthracite"
     ];
-
     const tbody = document.querySelector("#tbody");
     const summary = document.querySelector("#summary");
     let rowNumber = 0;
@@ -120,8 +125,8 @@
 
     function addRow() {
       rowNumber++;
-
       const row = document.createElement("tr");
+
       row.innerHTML = `
         <td>${rowNumber}</td>
         <td>
@@ -146,11 +151,7 @@
         </td>
         <td><select class="w" aria-label="Wood color">${options(colors)}</select></td>
         <td><select class="e" aria-label="Edge color">${options(colors)}</select></td>
-        <td>
-          <div class="same-cell">
-            <input class="same" aria-label="Use same edge color" type="checkbox" checked>
-          </div>
-        </td>
+        <td><div class="same-cell"><input class="same" aria-label="Use same edge color" type="checkbox" checked></div></td>
         <td>
           <select class="g" aria-label="Grain">
             <option selected>Grained</option>
@@ -200,7 +201,6 @@
         };
 
         const preset = presets[component.value];
-
         if (preset) {
           row.querySelector(".l").value = preset.length;
           row.querySelector(".h").value = preset.height;
@@ -209,7 +209,6 @@
             checkbox.checked = preset.edges[index];
           });
         }
-
         calculate();
       });
 
@@ -227,6 +226,7 @@
         calculate();
       });
 
+      edge.addEventListener("change", calculate);
       row.addEventListener("input", calculate);
       row.addEventListener("change", calculate);
       calculate();
@@ -281,10 +281,13 @@
         const sheetArea = 207 * 280 / 10000;
         totalSheets += area * 1.15 / sheetArea;
 
+        const edgeColor = row.querySelector(".e").value;
         const key = `${color} | ${thickness} | ${grain}`;
-        if (!groups[key]) groups[key] = { area: 0, edge: 0 };
+        if (!groups[key]) groups[key] = { area: 0, edge: 0, edgeByColor: {} };
         groups[key].area += area;
         groups[key].edge += edgeMetres;
+        groups[key].edgeByColor[edgeColor] =
+          (groups[key].edgeByColor[edgeColor] || 0) + edgeMetres;
       });
 
       document.querySelector("#c1").textContent =
@@ -310,10 +313,19 @@
 
         const stats = document.createElement("div");
         stats.className = "summary-stats";
+
+        const edgeByColor = Object.entries(value.edgeByColor)
+          .filter(([, metres]) => metres > 0)
+          .map(([edgeColor, metres]) =>
+            `<span>Edge ${edgeColor} <b>${metres.toFixed(2)} m</b></span>`
+          )
+          .join("");
+
         stats.innerHTML = `
           <span>Area <b>${value.area.toFixed(2)} m²</b></span>
           <span>Sheets <b>${Math.ceil(value.area * 1.15 / (207 * 280 / 10000))}</b></span>
-          <span>Edge <b>${value.edge.toFixed(2)} m</b></span>
+          <span>Total edge <b>${value.edge.toFixed(2)} m</b></span>
+          ${edgeByColor}
         `;
 
         item.append(title, stats);
@@ -322,6 +334,12 @@
     }
 
     document.querySelector("#add-button").addEventListener("click", addRow);
+
+    document.querySelector("#clear-button").addEventListener("click", () => {
+      tbody.replaceChildren();
+      rowNumber = 0;
+      for (let i = 0; i < 5; i++) addRow();
+    });
 
     window.addEventListener("load", () => {
       for (let i = 0; i < 5; i++) addRow();
