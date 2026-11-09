@@ -13,6 +13,7 @@
     input:not([type=checkbox]),select{width:100%;height:27px;padding:0 5px;border:1px solid #d4dce7;border-radius:4px;background:#fff;color:#172b43;font:inherit}input[type=number]{min-width:0;text-align:center}input[type=checkbox]{width:14px;height:14px;margin:0;accent-color:var(--blue);vertical-align:middle}.edge-options{display:grid;grid-template-columns:repeat(2,auto);justify-content:center;column-gap:8px;row-gap:0}.edge-options label{display:inline-flex;align-items:center;gap:2px;color:#52647a;font-size:10px;line-height:13px}.same-cell{display:flex;justify-content:center}.result{font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}.warning{color:#b45309;font-weight:700;white-space:nowrap}
     .row-actions{display:flex;justify-content:center;align-items:center;gap:4px}.row-actions button{min-width:25px;padding:5px 6px;font-size:10px;line-height:1.1}.drag-handle{background:#e8eef6;color:#334155;cursor:grab;user-select:none}.drag-handle:hover{background:#d4deeb}.drag-handle:active{cursor:grabbing}.move-row{background:#64748b}.move-row:hover{background:#475569}.delete-row{background:#dc2626}.delete-row:hover{background:#b91c1c}tbody tr.is-dragging{opacity:.4}tbody tr.drop-target>td{border-top:2px solid var(--blue)}
     th:nth-child(1),td:nth-child(1){width:34px}th:nth-child(2),td:nth-child(2){width:100px}th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4){width:70px}th:nth-child(5),td:nth-child(5){width:48px}th:nth-child(6),td:nth-child(6){width:82px}th:nth-child(7),td:nth-child(7),th:nth-child(8),td:nth-child(8){width:88px}th:nth-child(9),td:nth-child(9){width:48px}th:nth-child(10),td:nth-child(10){width:75px}th:nth-child(11),td:nth-child(11){width:84px}th:nth-child(12),td:nth-child(12){width:62px}th:nth-child(13),td:nth-child(13),th:nth-child(14),td:nth-child(14){width:68px}th:nth-child(15),td:nth-child(15){width:72px}th:nth-child(16),td:nth-child(16){width:132px}
+    .drawer-row-22>td{border-top:2px solid #93c5fd}.drawer-row-8>td{border-bottom:2px solid #93c5fd}.drawer-row-8{background:#eff6ff!important}
     .summary{margin-top:16px;padding:16px}.summary-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:10px;margin-top:12px}.summary-item{padding:11px;border:1px solid var(--line);border-radius:7px;background:#fbfcfe}.summary-item h3{margin:0 0 7px;font-size:13px}.summary-stats{display:flex;flex-wrap:wrap;gap:6px 14px;color:#52647a;font-size:12px}.summary-stats b{color:#172b43}.empty{color:var(--muted);font-size:13px}
     @media(max-width:850px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:760px){.header-content{align-items:stretch;flex-direction:column;gap:12px}.colors-panel{max-width:none}}@media(max-width:520px){main{padding:16px 10px 28px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:11px}.card .v{font-size:21px}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%}.toolbar-actions button{flex:1}.summary{padding:13px}}
   </style>
@@ -21,7 +22,7 @@
   <header><div class="header-content"><h1>ABSOLUTE BOARD COMPUTATION V1.1</h1><section class="colors-panel" aria-label="Available colors"><span class="colors-title">Color names for component rows</span><div class="color-inputs" id="color-inputs"><input class="color-name" type="text" value="Platinum white" aria-label="Color name 1" placeholder="Enter a color"></div><div class="color-actions"><button type="button" class="color-add" id="add-color">+ Add color</button></div></section></div></header>
   <main>
     <section class="cards" aria-label="Production totals"><div class="card"><span class="card-label">Components</span><strong id="c1" class="v">0</strong></div><div class="card"><span class="card-label">Quantity</span><strong id="c2" class="v">0</strong></div><div class="card"><span class="card-label">Area m²</span><strong id="c3" class="v">0.00</strong></div><div class="card"><span class="card-label">Sheets</span><strong id="c4" class="v">0</strong></div><div class="card"><span class="card-label">Edge m</span><strong id="c5" class="v">0.00</strong></div></section>
-    <div class="toolbar"><div><h2>Components</h2><p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p></div><div class="toolbar-actions"><button type="button" class="clear-button" id="clear-button">Clear</button><button type="button" id="add-button">+ Add Component</button></div></div>
+    <div class="toolbar"><div><h2>Components</h2><p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p></div><div class="toolbar-actions"><button type="button" class="clear-button" id="clear-button">Clear</button><button type="button" id="add-button">+ Add Component</button><button type="button" id="add-drawer-button">+ Add Drawer</button></div></div>
     <div class="table-wrap"><table><thead><tr><th>#</th><th>Component</th><th>L cm</th><th>H cm</th><th>Qty</th><th>Thickness</th><th>Wood</th><th>Edge</th><th>Same</th><th>Grain</th><th>Sheet</th><th>Edges</th><th>Area</th><th>Edge m</th><th>Warn</th><th>Move / Delete</th></tr></thead><tbody id="tbody"></tbody></table></div>
     <section class="summary"><h2>Material Summary</h2><div id="summary" class="summary-list"></div></section>
   </main>
@@ -112,6 +113,45 @@
       edge.addEventListener('change',calculate);row.addEventListener('input',calculate);row.addEventListener('change',calculate);
       calculate();
     }
+    function addDrawer(){
+      const firstIndex=rowNumber+1;
+      addRow();
+      const row22=tbody.lastElementChild;
+      addRow();
+      const row8=tbody.lastElementChild;
+      [row22,row8].forEach((row,index)=>{
+        row.classList.add('drawer-row');
+        row.dataset.drawerPair=String(firstIndex);
+        const component=row.querySelector('.component');
+        const option=document.createElement('option');
+        option.value=index===0?'Drawer 22mm':'Drawer 8mm';
+        option.textContent=option.value;
+        component.append(option);
+        component.value=option.value;
+        component.disabled=true;
+        row.querySelector('.t').value=index===0?'22 mm':'8 mm';
+        row.querySelector('.q').value=1;
+        row.querySelectorAll('.ed').forEach(check=>{check.checked=true;check.disabled=true});
+      });
+      row22.classList.add('drawer-row-22');
+      row8.classList.add('drawer-row-8');
+      row8.querySelector('.l').readOnly=true;
+      row8.querySelector('.h').readOnly=true;
+      row8.querySelector('.q').readOnly=true;
+      const sync=()=>{
+        const length=Number(row22.querySelector('.l').value)||0;
+        const height=Number(row22.querySelector('.h').value)||0;
+        row8.querySelector('.l').value=length*0.8;
+        row8.querySelector('.h').value=height*7;
+        row8.querySelector('.q').value=row22.querySelector('.q').value;
+        calculate();
+      };
+      row22.querySelectorAll('.l,.h,.q').forEach(input=>input.addEventListener('input',sync));
+      row22.querySelectorAll('.l,.h,.q').forEach(input=>input.addEventListener('change',sync));
+      row22.querySelector('.l').value=92;
+      row22.querySelector('.h').value=22;
+      sync();
+    }
     function calculate(){
       const rows=[...tbody.querySelectorAll('tr')];
       let totalQuantity=0,totalEdge=0,totalArea=0,totalSheets=0;
@@ -124,9 +164,9 @@
         const area=length*height*quantity/10000;row.querySelector('.a').textContent=area.toFixed(2);totalArea+=area;
         const edgeChecks=row.querySelectorAll('.ed');
         let edgeCm=0;if(edgeChecks[0].checked)edgeCm+=length;if(edgeChecks[1].checked)edgeCm+=length;if(edgeChecks[2].checked)edgeCm+=height;if(edgeChecks[3].checked)edgeCm+=height;
-        const edgeMetres=edgeCm*quantity/100;row.querySelector('.m').textContent=edgeMetres.toFixed(2);totalEdge+=edgeMetres;totalQuantity+=quantity;
+        const rawEdgeMetres=edgeCm*quantity/100;const edgeMetres=row.classList.contains('drawer-row-8')?Math.ceil((rawEdgeMetres-1e-10)*100)/100:rawEdgeMetres;row.querySelector('.m').textContent=edgeMetres.toFixed(2);totalEdge+=edgeMetres;totalQuantity+=quantity;
         const oversize=length>207||height>280;row.querySelector('.warn').textContent=oversize?'Oversize':'';row.querySelector('.warn').title=oversize?'Part exceeds the 207 × 280 cm sheet size':'';
-        totalSheets+=area*1.05/(207*280/10000);
+        totalSheets+=area*1.15/(207*280/10000);
         const edgeColor=row.querySelector('.e').value,key=`${color} | ${thickness} | ${grain}`;
         if(!groups[key])groups[key]={area:0,edge:0,edgeByColor:{}};
         groups[key].area+=area;groups[key].edge+=edgeMetres;
@@ -142,11 +182,12 @@
         const title=document.createElement('h3');title.textContent=key;
         const stats=document.createElement('div');stats.className='summary-stats';
         const edgeByColor=Object.entries(value.edgeByColor).filter(([,metres])=>metres>0).map(([edgeColor,metres])=>`<span>Edge ${edgeColor} <b>${metres.toFixed(2)} m</b></span>`).join('');
-        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.05/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
+        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.15/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
         item.append(title,stats);summary.append(item);
       });
     }
     document.querySelector('#add-button').addEventListener('click',addRow);
+    document.querySelector('#add-drawer-button').addEventListener('click',addDrawer);
     document.querySelector('#add-color').addEventListener('click',()=>{
       const input=document.createElement('input');input.className='color-name';input.type='text';input.placeholder='Enter a color';
       input.setAttribute('aria-label',`Color name ${colorInputs.children.length+1}`);input.addEventListener('change',refreshColorOptions);
@@ -166,3 +207,5 @@
   </script>
 </body>
 </html>
+
+
