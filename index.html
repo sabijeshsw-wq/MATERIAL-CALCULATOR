@@ -75,6 +75,7 @@ th{
 input,select{
     width:100%;
     padding:6px;
+    box-sizing:border-box;
 }
 
 .summary{
@@ -87,6 +88,11 @@ input,select{
 .edge-group{
     display:flex;
     gap:8px;
+}
+
+.small-text{
+    font-size:11px;
+    margin-top:4px;
 }
 </style>
 </head>
@@ -120,6 +126,7 @@ input,select{
 </p>
 
 <table>
+
 <thead>
 <tr>
 <th>#</th>
@@ -127,6 +134,8 @@ input,select{
 <th>Length (cm)</th>
 <th>Height (cm)</th>
 <th>Qty</th>
+<th>Wood Colour</th>
+<th>Edge Colour</th>
 <th>Edges</th>
 <th>Edge Metres</th>
 <th>Delete</th>
@@ -145,6 +154,23 @@ input,select{
 </main>
 
 <script>
+
+const colours = [
+    "White",
+    "Oak",
+    "Walnut",
+    "Grey",
+    "Black",
+    "Beige",
+    "Cashmere",
+    "Anthracite"
+];
+
+function colourOptions(){
+    return colours.map(colour =>
+        `<option value="${colour}">${colour}</option>`
+    ).join('');
+}
 
 let rowNumber = 0;
 
@@ -179,6 +205,25 @@ tr.innerHTML = `
 </td>
 
 <td>
+<select class="woodColour">
+${colourOptions()}
+</select>
+</td>
+
+<td>
+<select class="edgeColour" disabled>
+${colourOptions()}
+</select>
+
+<div class="small-text">
+<label>
+<input type="checkbox" class="sameColour" checked>
+Same
+</label>
+</div>
+</td>
+
+<td>
 <div class="edge-group">
 <label><input type="checkbox" class="edge" checked>T</label>
 <label><input type="checkbox" class="edge" checked>B</label>
@@ -196,6 +241,33 @@ tr.innerHTML = `
 
 document.getElementById("tbody").appendChild(tr);
 
+const woodSelect = tr.querySelector(".woodColour");
+const edgeSelect = tr.querySelector(".edgeColour");
+const sameCheck = tr.querySelector(".sameColour");
+
+edgeSelect.value = woodSelect.value;
+
+woodSelect.addEventListener("change", function(){
+
+    if(sameCheck.checked){
+        edgeSelect.value = this.value;
+    }
+
+    calculate();
+});
+
+sameCheck.addEventListener("change", function(){
+
+    if(this.checked){
+        edgeSelect.disabled = true;
+        edgeSelect.value = woodSelect.value;
+    }else{
+        edgeSelect.disabled = false;
+    }
+
+    calculate();
+});
+
 tr.addEventListener("input", calculate);
 tr.addEventListener("change", calculate);
 
@@ -203,8 +275,8 @@ calculate();
 }
 
 function deleteRow(btn){
-btn.closest("tr").remove();
-calculate();
+    btn.closest("tr").remove();
+    calculate();
 }
 
 function calculate(){
@@ -215,35 +287,43 @@ document.querySelectorAll("#tbody tr");
 let totalQty = 0;
 let totalEdge = 0;
 
+const edgeColourSummary = {};
+
 rows.forEach(row=>{
 
-const length =
-parseFloat(row.querySelector(".length").value) || 0;
+    const length =
+    parseFloat(row.querySelector(".length").value) || 0;
 
-const height =
-parseFloat(row.querySelector(".height").value) || 0;
+    const height =
+    parseFloat(row.querySelector(".height").value) || 0;
 
-const qty =
-parseFloat(row.querySelector(".qty").value) || 0;
+    const qty =
+    parseFloat(row.querySelector(".qty").value) || 0;
 
-const edges =
-row.querySelectorAll(".edge");
+    const edgeColour =
+    row.querySelector(".edgeColour").value;
 
-let edgeCm = 0;
+    const edges =
+    row.querySelectorAll(".edge");
 
-if(edges[0].checked) edgeCm += length;
-if(edges[1].checked) edgeCm += length;
-if(edges[2].checked) edgeCm += height;
-if(edges[3].checked) edgeCm += height;
+    let edgeCm = 0;
 
-const metres =
-(edgeCm / 100) * qty;
+    if(edges[0].checked) edgeCm += length;
+    if(edges[1].checked) edgeCm += length;
+    if(edges[2].checked) edgeCm += height;
+    if(edges[3].checked) edgeCm += height;
 
-row.querySelector(".metres").textContent =
-metres.toFixed(2) + " m";
+    const metres =
+    (edgeCm / 100) * qty;
 
-totalQty += qty;
-totalEdge += metres;
+    row.querySelector(".metres").textContent =
+    metres.toFixed(2) + " m";
+
+    totalQty += qty;
+    totalEdge += metres;
+
+    edgeColourSummary[edgeColour] =
+    (edgeColourSummary[edgeColour] || 0) + metres;
 
 });
 
@@ -256,10 +336,28 @@ totalQty;
 document.getElementById("totalEdge").textContent =
 totalEdge.toFixed(2) + " m";
 
+let summaryHTML = `
+<p>
+<strong>Total Edge Band Requirement:</strong>
+${totalEdge.toFixed(2)} m
+</p>
+<hr>
+`;
+
+for(const colour in edgeColourSummary){
+
+summaryHTML += `
+<p>
+${colour} :
+<strong>
+${edgeColourSummary[colour].toFixed(2)} m
+</strong>
+</p>
+`;
+}
+
 document.getElementById("summaryText").innerHTML =
-"Total edge band requirement: <strong>" +
-totalEdge.toFixed(2) +
-" m</strong>";
+summaryHTML;
 }
 
 window.addEventListener("DOMContentLoaded", function(){
