@@ -126,7 +126,7 @@
         let edgeCm=0;if(edgeChecks[0].checked)edgeCm+=length;if(edgeChecks[1].checked)edgeCm+=length;if(edgeChecks[2].checked)edgeCm+=height;if(edgeChecks[3].checked)edgeCm+=height;
         const edgeMetres=edgeCm*quantity/100;row.querySelector('.m').textContent=edgeMetres.toFixed(2);totalEdge+=edgeMetres;totalQuantity+=quantity;
         const oversize=length>207||height>280;row.querySelector('.warn').textContent=oversize?'Oversize':'';row.querySelector('.warn').title=oversize?'Part exceeds the 207 × 280 cm sheet size':'';
-        totalSheets+=area*1.1/(207*280/10000);
+        totalSheets+=area*1.05/(207*280/10000);
         const edgeColor=row.querySelector('.e').value,key=`${color} | ${thickness} | ${grain}`;
         if(!groups[key])groups[key]={area:0,edge:0,edgeByColor:{}};
         groups[key].area+=area;groups[key].edge+=edgeMetres;
@@ -142,7 +142,7 @@
         const title=document.createElement('h3');title.textContent=key;
         const stats=document.createElement('div');stats.className='summary-stats';
         const edgeByColor=Object.entries(value.edgeByColor).filter(([,metres])=>metres>0).map(([edgeColor,metres])=>`<span>Edge ${edgeColor} <b>${metres.toFixed(2)} m</b></span>`).join('');
-        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.1/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
+        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.05/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
         item.append(title,stats);summary.append(item);
       });
     }
