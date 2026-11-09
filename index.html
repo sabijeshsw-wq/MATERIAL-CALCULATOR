@@ -2,36 +2,275 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Material Command - Production Planner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Production Planner</title>
 
 <style>
-:root{
---navy:#172b43;
---blue:#2563eb;
---bg:#f2f5f9;
---line:#e2e8f0;
---text:#243247;
---muted:#64748b;
-}
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-}
-
 body{
-font-family:Arial,sans-serif;
-background:var(--bg);
-color:var(--text);
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f4f6f9;
 }
 
 header{
-background:var(--navy);
-color:#fff;
-padding:20px;
+    background:#172b43;
+    color:white;
+    padding:20px;
 }
 
-.header-row{
-display:flex;
+main{
+    padding:20px;
+}
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:15px;
+    border-radius:8px;
+    box-shadow:0 1px 3px rgba(0,0,0,.1);
+}
+
+.card h3{
+    margin:0;
+    color:#777;
+    font-size:13px;
+}
+
+.card div{
+    font-size:28px;
+    font-weight:bold;
+    margin-top:6px;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:8px;
+}
+
+th{
+    background:#f5f5f5;
+}
+
+input,select{
+    width:100%;
+    padding:6px;
+}
+
+.summary{
+    margin-top:20px;
+    background:white;
+    padding:15px;
+    border-radius:8px;
+}
+
+.edge-group{
+    display:flex;
+    gap:8px;
+}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Material Command - Production Planner</h1>
+</header>
+
+<main>
+
+<div class="cards">
+    <div class="card">
+        <h3>Total Components</h3>
+        <div id="totalComponents">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Total Quantity</h3>
+        <div id="totalQty">0</div>
+    </div>
+
+    <div class="card">
+        <h3>Total Edge</h3>
+        <div id="totalEdge">0 m</div>
+    </div>
+</div>
+
+<p>
+<button onclick="addRow()">+ Add Component</button>
+</p>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Component</th>
+<th>Length (cm)</th>
+<th>Height (cm)</th>
+<th>Qty</th>
+<th>Edges</th>
+<th>Edge Metres</th>
+<th>Delete</th>
+</tr>
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+<div class="summary">
+<h3>Edge Summary</h3>
+<div id="summaryText">No data</div>
+</div>
+
+</main>
+
+<script>
+
+let rowNumber = 0;
+
+function addRow(){
+
+rowNumber++;
+
+const tr = document.createElement("tr");
+
+tr.innerHTML = `
+<td>${rowNumber}</td>
+
+<td>
+<select class="component">
+<option>Shelf</option>
+<option>Partition</option>
+<option>Door</option>
+<option>Side Panel</option>
+</select>
+</td>
+
+<td>
+<input type="number" class="length" value="60">
+</td>
+
+<td>
+<input type="number" class="height" value="280">
+</td>
+
+<td>
+<input type="number" class="qty" value="1" min="1">
+</td>
+
+<td>
+<div class="edge-group">
+<label><input type="checkbox" class="edge" checked>T</label>
+<label><input type="checkbox" class="edge" checked>B</label>
+<label><input type="checkbox" class="edge">L</label>
+<label><input type="checkbox" class="edge">R</label>
+</div>
+</td>
+
+<td class="metres">0.00 m</td>
+
+<td>
+<button onclick="deleteRow(this)">X</button>
+</td>
+`;
+
+document.getElementById("tbody").appendChild(tr);
+
+tr.addEventListener("input", calculate);
+tr.addEventListener("change", calculate);
+
+calculate();
+}
+
+function deleteRow(btn){
+btn.closest("tr").remove();
+calculate();
+}
+
+function calculate(){
+
+const rows =
+document.querySelectorAll("#tbody tr");
+
+let totalQty = 0;
+let totalEdge = 0;
+
+rows.forEach(row=>{
+
+const length =
+parseFloat(row.querySelector(".length").value) || 0;
+
+const height =
+parseFloat(row.querySelector(".height").value) || 0;
+
+const qty =
+parseFloat(row.querySelector(".qty").value) || 0;
+
+const edges =
+row.querySelectorAll(".edge");
+
+let edgeCm = 0;
+
+if(edges[0].checked) edgeCm += length;
+if(edges[1].checked) edgeCm += length;
+if(edges[2].checked) edgeCm += height;
+if(edges[3].checked) edgeCm += height;
+
+const metres =
+(edgeCm / 100) * qty;
+
+row.querySelector(".metres").textContent =
+metres.toFixed(2) + " m";
+
+totalQty += qty;
+totalEdge += metres;
+
+});
+
+document.getElementById("totalComponents").textContent =
+rows.length;
+
+document.getElementById("totalQty").textContent =
+totalQty;
+
+document.getElementById("totalEdge").textContent =
+totalEdge.toFixed(2) + " m";
+
+document.getElementById("summaryText").innerHTML =
+"Total edge band requirement: <strong>" +
+totalEdge.toFixed(2) +
+" m</strong>";
+}
+
+window.addEventListener("DOMContentLoaded", function(){
+
+addRow();
+addRow();
+addRow();
+
+});
+
+</script>
+
+</body>
+</html>
