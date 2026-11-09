@@ -142,7 +142,7 @@
         const title=document.createElement('h3');title.textContent=key;
         const stats=document.createElement('div');stats.className='summary-stats';
         const edgeByColor=Object.entries(value.edgeByColor).filter(([,metres])=>metres>0).map(([edgeColor,metres])=>`<span>Edge ${edgeColor} <b>${metres.toFixed(2)} m</b></span>`).join('');
-        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.15/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
+        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.1/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
         item.append(title,stats);summary.append(item);
       });
     }
