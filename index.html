@@ -2,179 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Material Command | Production Planner</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Material Command - Production Planner</title>
 
 <style>
-:root {
-  --navy:#172b43;
-  --blue:#2563eb;
-  --bg:#f2f5f9;
-  --line:#e2e8f0;
-  --text:#243247;
-  --muted:#718096;
+:root{
+--navy:#172b43;
+--blue:#2563eb;
+--bg:#f2f5f9;
+--line:#e2e8f0;
+--text:#243247;
+--muted:#64748b;
 }
 
-* {
-  box-sizing:border-box;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
 }
 
-body {
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
+body{
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
 }
 
-header {
-  background:var(--navy);
-  color:white;
-  padding:22px 28px;
+header{
+background:var(--navy);
+color:#fff;
+padding:20px;
 }
 
-.header-row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:15px;
-}
-
-.brand {
-  font-size:12px;
-  letter-spacing:2px;
-  color:#93c5fd;
-  font-weight:bold;
-}
-
-h1 {
-  margin:7px 0 3px;
-  font-size:25px;
-}
-
-.subtitle {
-  color:#b9c9db;
-  font-size:12px;
-}
-
-.status {
-  background:#245a48;
-  color:#a7f3d0;
-  padding:7px 12px;
-  border-radius:20px;
-  font-size:11px;
-}
-
-main {
-  max-width:1500px;
-  margin:auto;
-  padding:22px;
-}
-
-.section-title {
-  font-size:17px;
-  font-weight:bold;
-  margin:22px 0 13px;
-}
-
-.cards {
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:13px;
-}
-
-.card {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:17px;
-}
-
-.card-label {
-  font-size:12px;
-  color:var(--muted);
-}
-
-.card-value {
-  font-size:27px;
-  font-weight:bold;
-  margin-top:8px;
-}
-
-.blue { color:#2563eb; }
-.green { color:#059669; }
-.purple { color:#7c3aed; }
-.orange { color:#d97706; }
-
-.toolbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-
-button {
-  border:0;
-  border-radius:7px;
-  padding:10px 15px;
-  cursor:pointer;
-  font-weight:bold;
-  font-size:12px;
-}
-
-.primary {
-  background:var(--blue);
-  color:white;
-}
-
-.secondary {
-  background:white;
-  border:1px solid var(--line);
-  color:var(--text);
-}
-
-button:hover {
-  opacity:.85;
-}
-
-.table-wrap {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:11px;
-  overflow-x:auto;
-}
-
-table {
-  width:100%;
-  min-width:1150px;
-  border-collapse:collapse;
-}
-
-th {
-  background:#f7f9fc;
-  padding:13px 9px;
-  text-align:left;
-  font-size:11px;
-  color:#64748b;
-  white-space:nowrap;
-  border-bottom:1px solid var(--line);
-}
-
-td {
-  padding:9px;
-  border-bottom:1px solid var(--line);
-  font-size:12px;
-  vertical-align:middle;
-}
-
-tbody tr:hover {
-  background:#f8fbff;
-}
-
-input,
-select {
-  border:1px solid #dce3ec;
-  border-radius:6px;
-  padding:8px;
-  background
+.header-row{
+display:flex;
