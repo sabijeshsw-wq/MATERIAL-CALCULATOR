@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ABSOLUTE BOARD COMPUTATION V1.1</title>
+  <title>Material Required</title>
   <style>
     :root{font-family:Arial,sans-serif;color:#172b43;background:#f3f6fa;--navy:#172b43;--blue:#2563eb;--line:#dfe6ef;--muted:#65758b}
     *{box-sizing:border-box}body{margin:0;min-width:320px}header{padding:18px clamp(16px,4vw,40px);background:var(--navy);color:#fff}.header-content{max-width:1600px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:22px}h1{margin:0;font-size:clamp(22px,3vw,30px)}.colors-panel{min-width:280px;max-width:480px;padding:11px 13px;border:1px solid #ffffff35;border-radius:8px;background:#ffffff0d}.colors-title{display:block;margin-bottom:7px;color:#dce7f4;font-size:12px;font-weight:700}.color-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.color-name{min-width:0;height:30px;padding:0 8px;border:1px solid #ffffff45;border-radius:5px;background:#fff;color:#172b43;font:13px Arial,sans-serif}.color-actions{display:flex;gap:6px;margin-top:7px}.color-actions button{padding:6px 9px;font-size:12px}.color-add{background:#3b82f6}main{max-width:1600px;margin:auto;padding:22px clamp(12px,3vw,30px) 40px}
@@ -16,15 +16,15 @@
     .drawer-row-22>td{border-top:2px solid #93c5fd}.drawer-row-8>td{border-bottom:2px solid #93c5fd}.drawer-row-8{background:#eff6ff!important}
     .summary{margin-top:16px;padding:16px}.summary-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:10px;margin-top:12px}.summary-item{padding:11px;border:1px solid var(--line);border-radius:7px;background:#fbfcfe}.summary-item h3{margin:0 0 7px;font-size:13px}.summary-stats{display:flex;flex-wrap:wrap;gap:6px 14px;color:#52647a;font-size:12px}.summary-stats b{color:#172b43}.empty{color:var(--muted);font-size:13px}
     @media(max-width:850px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:760px){.header-content{align-items:stretch;flex-direction:column;gap:12px}.colors-panel{max-width:none}}@media(max-width:520px){main{padding:16px 10px 28px}.cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card{padding:11px}.card .v{font-size:21px}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-actions{width:100%}.toolbar-actions button{flex:1}.summary{padding:13px}}
-  </style>
+  .client-details{display:flex;gap:12px;margin-bottom:16px}.client-details label{display:grid;gap:5px;font-weight:bold}.print-button{background:#0f766e}.report-only{display:none}.print-date-time{display:none}@media print{@page{size:A4 portrait;margin:0}header{display:none!important}.colors-panel,.toolbar,.table-wrap,.cards{display:none!important}main{max-width:none;margin:0;padding:12mm 13mm 22mm}.report-only{display:block}.summary{border:0;box-shadow:none}.summary-list{display:none!important}.report-table{width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;font-size:11pt}.report-table th,.report-table td{padding:7px 8px;border:1px solid #777;text-align:left;overflow-wrap:anywhere}.report-table th:nth-child(1){width:30%}.report-table th:nth-child(2){width:43%}.report-table th:nth-child(3){width:27%}.report-table td:last-child{text-align:center;font-weight:700}#edge-report td:last-child{text-align:right}#edge-grand-total{font-weight:700;text-align:right;margin-top:7px}.report-only h2{margin:13px 0 5px;font-size:14pt}.report-only table{margin-bottom:8px}.report-only>h2:first-child{margin-top:0}.print-date-time{display:block;position:fixed;left:13mm;bottom:7mm;font-size:9pt;color:#333}} </style>
 </head>
 <body>
   <header><div class="header-content"><h1>ABSOLUTE BOARD COMPUTATION V1.1</h1><section class="colors-panel" aria-label="Available colors"><span class="colors-title">Color names for component rows</span><div class="color-inputs" id="color-inputs"><input class="color-name" type="text" value="Platinum white" aria-label="Color name 1" placeholder="Enter a color"></div><div class="color-actions"><button type="button" class="color-add" id="add-color">+ Add color</button></div></section></div></header>
-  <main>
+  <main><section class="client-details"><label>Client name<input id="client-name" placeholder="Enter client name"></label><label>Contact number<input id="client-contact" type="tel" placeholder="Enter contact number"></label></section>
     <section class="cards" aria-label="Production totals"><div class="card"><span class="card-label">Components</span><strong id="c1" class="v">0</strong></div><div class="card"><span class="card-label">Quantity</span><strong id="c2" class="v">0</strong></div><div class="card"><span class="card-label">Area m²</span><strong id="c3" class="v">0.00</strong></div><div class="card"><span class="card-label">Sheets</span><strong id="c4" class="v">0</strong></div><div class="card"><span class="card-label">Edge m</span><strong id="c5" class="v">0.00</strong></div></section>
-    <div class="toolbar"><div><h2>Components</h2><p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p></div><div class="toolbar-actions"><button type="button" class="clear-button" id="clear-button">Clear</button><button type="button" id="add-button">+ Add Component</button><button type="button" id="add-drawer-button">+ Add Drawer</button></div></div>
+    <div class="toolbar"><div><h2>Components</h2><p class="hint">Dimensions are in centimetres. Scroll horizontally to view all columns.</p></div><div class="toolbar-actions"><button type="button" class="clear-button" id="clear-button">Clear</button><button type="button" class="print-button" onclick="window.print()">Print Report</button><button type="button" id="add-button">+ Add Component</button><button type="button" id="add-drawer-button">+ Add Drawer</button></div></div>
     <div class="table-wrap"><table><thead><tr><th>#</th><th>Component</th><th>L cm</th><th>H cm</th><th>Qty</th><th>Thickness</th><th>Wood</th><th>Edge</th><th>Same</th><th>Grain</th><th>Sheet</th><th>Edges</th><th>Area</th><th>Edge m</th><th>Warn</th><th>Move / Delete</th></tr></thead><tbody id="tbody"></tbody></table></div>
-    <section class="summary"><h2>Material Summary</h2><div id="summary" class="summary-list"></div></section>
+    <section class="summary"><h2>Material Required</h2><div id="summary" class="summary-list"></div><div class="report-only"><div id="board-report-sections"></div><div id="edge-report-section"><h2>Edge Band</h2><table class="report-table"><thead><tr><th>Edge band color</th><th>Quantity (metres)</th></tr></thead><tbody id="edge-report"></tbody></table><p id="edge-grand-total"></p></div></div><div id="print-date-time" class="print-date-time"></div></section>
   </main>
   <script>
     const tbody=document.querySelector('#tbody');
@@ -156,6 +156,8 @@
       const rows=[...tbody.querySelectorAll('tr')];
       let totalQuantity=0,totalEdge=0,totalArea=0,totalSheets=0;
       const groups={};
+      const edgeTotals={};
+      const boardTotals={};
       rows.forEach(row=>{
         const component=row.querySelector('.component').value;
         const length=Number(row.querySelector('.l').value)||0,height=Number(row.querySelector('.h').value)||0,quantity=Number(row.querySelector('.q').value)||0;
@@ -168,21 +170,46 @@
         const oversize=length>207||height>280;row.querySelector('.warn').textContent=oversize?'Oversize':'';row.querySelector('.warn').title=oversize?'Part exceeds the 207 × 280 cm sheet size':'';
         totalSheets+=area*1.15/(207*280/10000);
         const edgeColor=row.querySelector('.e').value,key=`${color} | ${thickness} | ${grain}`;
+        const boardKey=`${thickness}|${row.querySelector('.sheet').value.trim()}|${color}`;
+        if(!boardTotals[boardKey])boardTotals[boardKey]={thickness,size:row.querySelector('.sheet').value.trim(),color,area:0};
+        boardTotals[boardKey].area+=area;
         if(!groups[key])groups[key]={area:0,edge:0,edgeByColor:{}};
         groups[key].area+=area;groups[key].edge+=edgeMetres;
         groups[key].edgeByColor[edgeColor]=(groups[key].edgeByColor[edgeColor]||0)+edgeMetres;
+        edgeTotals[edgeColor]=(edgeTotals[edgeColor]||0)+edgeMetres;
       });
       document.querySelector('#c1').textContent=rows.filter(row=>row.querySelector('.component').value).length;
       document.querySelector('#c2').textContent=totalQuantity;document.querySelector('#c3').textContent=totalArea.toFixed(2);
       document.querySelector('#c4').textContent=Math.ceil(totalSheets);document.querySelector('#c5').textContent=totalEdge.toFixed(2);
       summary.replaceChildren();
-      if(!Object.keys(groups).length){summary.innerHTML='<p class="empty">No components yet.</p>';return}
+      const edgeReport=document.querySelector('#edge-report');edgeReport.replaceChildren();Object.entries(edgeTotals).filter(([,m])=>m>0).forEach(([color,m])=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${color}</td><td>${m.toFixed(2)}</td>`;edgeReport.append(tr)});
+      document.querySelector('#edge-grand-total').textContent=`Total edge band: ${totalEdge.toFixed(2)} m`;
+      const boardReport=document.querySelector('#board-report-sections');boardReport.replaceChildren();
+      const byThickness={};
+      Object.values(boardTotals).sort((a,b)=>a.size.localeCompare(b.size)||a.color.localeCompare(b.color)).forEach(board=>{
+        const dims=board.size.toLowerCase().split(/[x×]/).map(Number);
+        const sheetArea=dims.length===2&&dims[0]>0&&dims[1]>0?dims[0]*dims[1]/10000:207*280/10000;
+        const qty=Math.ceil(board.area*1.15/sheetArea);if(qty<=0)return;
+        if(!byThickness[board.thickness])byThickness[board.thickness]=[];
+        byThickness[board.thickness].push({board,qty});
+      });
+      const thicknessOrder=['22 mm','18 mm','16 mm','8 mm'];const thicknesses=Object.keys(byThickness).sort((a,b)=>{const ai=thicknessOrder.indexOf(a),bi=thicknessOrder.indexOf(b);return (ai<0?thicknessOrder.length:ai)-(bi<0?thicknessOrder.length:bi)||a.localeCompare(b)});
+      thicknesses.forEach(thickness=>{
+        const section=document.createElement('section');section.className='board-report-section';
+        const heading=document.createElement('h2');heading.textContent=`Board ${thickness}`;
+        const table=document.createElement('table');table.className='report-table';
+        table.innerHTML='<thead><tr><th>Board size</th><th>Color</th><th>Board quantity (sheets)</th></tr></thead><tbody></tbody>';
+        const body=table.querySelector('tbody');
+        byThickness[thickness].forEach(({board,qty})=>{const tr=document.createElement('tr');[board.size,board.color,String(qty)].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td)});body.append(tr)});
+        section.append(heading,table);boardReport.append(section);
+      });
+      document.querySelector('#edge-report-section').style.display=Object.values(edgeTotals).some(m=>m>0)?'':'none';      if(!Object.keys(groups).length){summary.innerHTML='<p class="empty">No components yet.</p>';return}
       Object.entries(groups).forEach(([key,value])=>{
         const item=document.createElement('article');item.className='summary-item';
         const title=document.createElement('h3');title.textContent=key;
         const stats=document.createElement('div');stats.className='summary-stats';
         const edgeByColor=Object.entries(value.edgeByColor).filter(([,metres])=>metres>0).map(([edgeColor,metres])=>`<span>Edge ${edgeColor} <b>${metres.toFixed(2)} m</b></span>`).join('');
-        stats.innerHTML=`<span>Area <b>${value.area.toFixed(2)} m²</b></span><span>Sheets <b>${Math.ceil(value.area*1.15/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
+        stats.innerHTML=`<span>Sheets <b>${Math.ceil(value.area*1.15/(207*280/10000))}</b></span><span>Total edge <b>${value.edge.toFixed(2)} m</b></span>${edgeByColor}`;
         item.append(title,stats);summary.append(item);
       });
     }
@@ -203,9 +230,26 @@
       const bounds=target.getBoundingClientRect();
       tbody.insertBefore(draggedRow,event.clientY>bounds.top+bounds.height/2?target.nextElementSibling:target);
     });
+    window.addEventListener('beforeprint',()=>{document.querySelector('#print-date-time').textContent=new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(new Date())});
     window.addEventListener('load',()=>{for(let i=0;i<5;i++)addRow();refreshColorOptions()});
   </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
