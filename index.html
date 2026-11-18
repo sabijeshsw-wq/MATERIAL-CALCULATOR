@@ -274,7 +274,7 @@
       colorInputs.append(input);input.focus();
     });
     colorInputs.querySelectorAll('.color-name').forEach(input=>input.addEventListener('change',refreshColorOptions));
-    document.querySelector('#clear-button').addEventListener('click',()=>{tbody.replaceChildren();rowNumber=0;for(let i=0;i<5;i++)addRow()});
+    document.querySelector('#clear-button').addEventListener('click',()=>{tbody.replaceChildren();rowNumber=0;colorInputs.replaceChildren();const defaultColor=document.createElement('input');defaultColor.className='color-name';defaultColor.type='text';defaultColor.value='Platinum white';defaultColor.placeholder='Enter a color';defaultColor.setAttribute('aria-label','Color name 1');defaultColor.addEventListener('change',refreshColorOptions);colorInputs.append(defaultColor);for(let i=0;i<5;i++)addRow();refreshColorOptions()});
     tbody.addEventListener('dragover',event=>{
       event.preventDefault();if(!draggedRow)return;
       const target=event.target.closest('tr');if(!target||target===draggedRow)return;
@@ -297,6 +297,7 @@
   </script>
 </body>
 </html>
+
 
 
 
