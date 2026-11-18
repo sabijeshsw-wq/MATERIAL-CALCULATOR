@@ -198,9 +198,9 @@
         const section=document.createElement('section');section.className='board-report-section';
         const heading=document.createElement('h2');heading.textContent=`Board ${thickness}`;
         const table=document.createElement('table');table.className='report-table';
-        table.innerHTML='<thead><tr><th>Board size</th><th>Color</th><th>Board quantity (sheets)</th></tr></thead><tbody></tbody>';
+        table.innerHTML='<thead><tr><th>Color</th><th>Board size</th><th>Board quantity (sheets)</th></tr></thead><tbody></tbody>';
         const body=table.querySelector('tbody');
-        byThickness[thickness].forEach(({board,qty})=>{const tr=document.createElement('tr');[board.size,board.color,String(qty)].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td)});body.append(tr)});
+        byThickness[thickness].forEach(({board,qty})=>{const tr=document.createElement('tr');[board.color,board.size,String(qty)].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td)});body.append(tr)});
         section.append(heading,table);boardReport.append(section);
       });
       document.querySelector('#edge-report-section').style.display=Object.values(edgeTotals).some(m=>m>0)?'':'none';      if(!Object.keys(groups).length){summary.innerHTML='<p class="empty">No components yet.</p>';return}
@@ -235,6 +235,7 @@
   </script>
 </body>
 </html>
+
 
 
 
